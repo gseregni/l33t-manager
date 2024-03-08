@@ -1,0 +1,11 @@
+services:
+  server:
+    restart: no
+    build:
+      context: .
+    volumes:
+      - "./:/usr/src/app"
+      - /usr/src/app/node_modules
+    ports:
+      - 4200:4200
+      - 49153:49153
