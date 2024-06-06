@@ -13,8 +13,11 @@ type Schemes = GetSchemes<
 >;
 type AreaExtra = AngularArea2D<Schemes>;
 
+
+
+export   const socket = new ClassicPreset.Socket("socket");
+
 export async function createEditor(container: HTMLElement, injector: Injector) {
-  const socket = new ClassicPreset.Socket("socket");
 
   const editor = new NodeEditor<Schemes>();
   const area = new AreaPlugin<Schemes, AreaExtra>(container);
@@ -67,5 +70,5 @@ export async function createEditor(container: HTMLElement, injector: Injector) {
 
   AreaExtensions.zoomAt(area, editor.getNodes());
 
-  return () => area.destroy();
+  return editor
 }
