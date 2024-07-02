@@ -3,12 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { WSService } from './services/ws.service';
 import { createEditor, socket } from './rete-editor';
 import { ClassicPreset } from 'rete';
-import { NgFor } from '@angular/common';
+import { JsonPipe, NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgFor],
+  imports: [RouterOutlet, NgFor, JsonPipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
