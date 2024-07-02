@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { WSService } from './services/ws.service';
 import { createEditor, socket } from './rete-editor';
 import { ClassicPreset } from 'rete';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NgFor],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -18,7 +19,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild("rete") container!: ElementRef;
   editor:any = null;
 
-  constructor(private wss:WSService,
+  constructor(public wss:WSService,
     private injector: Injector) {
     this.wss.start()
   }
@@ -28,6 +29,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   
   }
 
+  save() {
+    window.localStorage.setItem("l33t", this.editor.editor.toJSON())
+  }
+    
 
   async addNodeFromJson(json:any) {
 
@@ -106,7 +111,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     const el = this.container.nativeElement;
 
     if (el) {
+      
      this.editor =  await createEditor(el, this.injector);
+
+     
+    //  this.editor.editor.fromJSON(window.localStorage.getItem("l33t"))
+
+
     }
   }
 

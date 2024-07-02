@@ -9,6 +9,7 @@ export class WSService {
     
     socket: Socket | undefined;
     public variables: {} = {};
+    tree: any;
 
     constructor() {
         this.start()
@@ -28,10 +29,11 @@ export class WSService {
         
         console.log("STARTTTTT ")
         
-        this.socket.on("plc_read", (message) => {
+        this.socket.on("tree_refresh", (message) => {
             // console.log("read1", message)
-            var vs = JSON.parse(message)
-            console.log(vs)
+            // var vs = JSON.parse(message)
+            console.log(message)
+            this.tree = message
            /*  vs.forEach(v => {
                 let h = this.getHandle(v.name)
                 h.plc = v.plc
