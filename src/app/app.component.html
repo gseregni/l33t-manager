@@ -30,10 +30,32 @@
   
               </div>
             </div>
+
+
+         
+
+
   
           </div>
         </div> 
       </div>
+    </div>
+
+    <div class="col-4">
+      <div *ngFor="let a of wss?.tree?.areas">
+        <div class="card mb-4" *ngFor="let cb of a.codeblocks">
+          <div class="card-header d-flex align-items-center">
+          Codeblock {{cb.name}}
+          <span class="ms-auto"></span>
+          </div>
+          <div class="card-body p-2">
+            <!-- {{ag.data | json}} -->
+            {{cb.outputs | json}}
+
+          </div>
+        </div>
+      </div>
+
     </div>
 
       <div class="col-8">
