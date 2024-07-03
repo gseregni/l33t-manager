@@ -40,33 +40,33 @@ export async function createEditor(container: HTMLElement, injector: Injector) {
 
 
   
-  const x = new ClassicPreset.Node("X");
-  x.addControl(
-    "a",
-    new ClassicPreset.InputControl("text", { initial: "x" })
-  );
-  await editor.addNode(x);
+  // const x = new ClassicPreset.Node("X");
+  // x.addControl(
+  //   "a",
+  //   new ClassicPreset.InputControl("text", { initial: "x" })
+  // );
+  // await editor.addNode(x);
 
 
-  const a = new ClassicPreset.Node("A");
-  a.addControl(
-    "a",
-    new ClassicPreset.InputControl("text", { initial: "hello" })
-  );
-  a.addOutput("a", new ClassicPreset.Output(socket));
-  await editor.addNode(a);
+  // const a = new ClassicPreset.Node("A");
+  // a.addControl(
+  //   "a",
+  //   new ClassicPreset.InputControl("text", { initial: "hello" })
+  // );
+  // a.addOutput("a", new ClassicPreset.Output(socket));
+  // await editor.addNode(a);
 
-  const b = new ClassicPreset.Node("B");
-  b.addControl(
-    "b",
-    new ClassicPreset.InputControl("text", { initial: "hello" })
-  );
-  b.addInput("b", new ClassicPreset.Input(socket));
-  await editor.addNode(b);
+  // const b = new ClassicPreset.Node("B");
+  // b.addControl(
+  //   "b",
+  //   new ClassicPreset.InputControl("text", { initial: "hello" })
+  // );
+  // b.addInput("b", new ClassicPreset.Input(socket));
+  // await editor.addNode(b);
 
-  await area.translate(b.id, { x: 320, y: 0 });
+  // await area.translate(b.id, { x: 320, y: 0 });
 
-  await editor.addConnection(new ClassicPreset.Connection(a, "a", b, "b"));
+  // await editor.addConnection(new ClassicPreset.Connection(a, "a", b, "b"));
 
   AreaExtensions.zoomAt(area, editor.getNodes());
 

@@ -30,7 +30,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   save() {
-    window.localStorage.setItem("l33t", this.editor.editor.toJSON())
+    // window.localStorage.setItem("l33t", this.editor.editor.toJSON())
   }
     
 
@@ -60,32 +60,37 @@ export class AppComponent implements OnInit, AfterViewInit {
   
 
   addNode2() {
-    this.addFromJson({
-      id: "node1",
-      name: "Asaasas",
-      position: [100, 100],
-      inputs: [
-        {"key":"a","socket":0}
-      ],
-      outputs: [
-        {"key":"a","socket":0}
-      ]
-  })
+    this.wss.tree.areas[0].agents.forEach((agent:any) => {
+      this.addFromJson(agent)
+    })
+    
+
+  //   this.addFromJson({
+  //     id: "node1",
+  //     name: "Asaasas",
+  //     position: [100, 100],
+  //     inputs: [
+  //       {"key":"a","socket":0}
+  //     ],
+  //     outputs: [
+  //       {"key":"a","socket":0}
+  //     ]
+  //  })
   }
 
   async addFromJson(config:any) {
-    const { name, inputs, outputs } = config;
-
+    // const { name, inputs, outputs } = config;
+    let name = "Agent" + config.id + " - " + config.type
     // Create a new node with the specified name
     const node = new ClassicPreset.Node(name);
 
     // // Add controls to the node
-    inputs.forEach((output: { key: any; socket:  number; }) => {
+    config.inputs.forEach((output: { key: any; socket:  number; }) => {
       node.addInput(output.key, new ClassicPreset.Input(socket)); // Assuming sockets are globally defined
     });
 
     // Add outputs to the node
-    outputs.forEach((output: { key: any; socket:  number; }) => {
+    config.outputs.forEach((output: { key: any; socket:  number; }) => {
       node.addOutput(output.key, new ClassicPreset.Output(socket)); // Assuming sockets are globally defined
     });
 
@@ -97,13 +102,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   
   addNode() {
 
-    var a = new ClassicPreset.Node("A");
-    a.addControl(
-      "a",
-      new ClassicPreset.InputControl("text", { initial: "hello" })
-    );
-    a.addOutput("a", new ClassicPreset.Output(socket));
-    this.editor.addNode(a);
+    // var a = new ClassicPreset.Node("A");
+    // a.addControl(
+    //   "a",
+    //   new ClassicPreset.InputControl("text", { initial: "hello" })
+    // );
+    // a.addOutput("a", new ClassicPreset.Output(socket));
+    // this.editor.addNode(a);
   }
 
 
