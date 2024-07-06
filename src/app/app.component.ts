@@ -1,25 +1,30 @@
-import { AfterViewInit, Component, ElementRef, Injector, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Injector, OnInit, TrackByFunction, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { WSService } from './services/ws.service';
 import { createEditor, socket } from './rete-editor';
 import { ClassicPreset } from 'rete';
 import { JsonPipe, NgFor } from '@angular/common';
+import { RulerComponent } from './inspectors/ruler/ruler.component';
+import { InspectorComponent } from './inspectors/inspector/inspector.component';
+import { SelectionService } from './services/selection.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgFor, JsonPipe],
+  imports: [RouterOutlet, NgFor,JsonPipe, RulerComponent, InspectorComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
 
   
   title = 'h3';
   @ViewChild("rete") container!: ElementRef;
   editor:any = null;
+  selection: any|null = null;
 
   constructor(public wss:WSService,
+    private selectionService:SelectionService,
     private injector: Injector) {
     this.wss.start()
   }
@@ -33,6 +38,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     // window.localStorage.setItem("l33t", this.editor.editor.toJSON())
   }
     
+
+  identify: TrackByFunction<any> = (index, item) => item.id;
+
+  setSelection(a:any): void {
+    console.log("setSelection", a)
+    this.selectionService.selection.set(a)
+  }
+
 
   async addNodeFromJson(json:any) {
 
@@ -112,19 +125,19 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
 
-  async ngAfterViewInit(): Promise<void> {
-    const el = this.container.nativeElement;
+  // async ngAfterViewInit(): Promise<void> {
+  //   // const el = this.container.nativeElement;
 
-    if (el) {
+  //   // if (el) {
       
-     this.editor =  await createEditor(el, this.injector);
+  //   //  this.editor =  await createEditor(el, this.injector);
 
      
-    //  this.editor.editor.fromJSON(window.localStorage.getItem("l33t"))
+  //   // //  this.editor.editor.fromJSON(window.localStorage.getItem("l33t"))
 
 
-    }
-  }
+  //   // }
+  // }
 
 
 }

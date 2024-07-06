@@ -32,7 +32,7 @@ export class WSService {
         this.socket.on("tree_refresh", (message) => {
             // console.log("read1", message)
             // var vs = JSON.parse(message)
-            console.log(message)
+            // console.log(message)
             this.tree = message
            /*  vs.forEach(v => {
                 let h = this.getHandle(v.name)
