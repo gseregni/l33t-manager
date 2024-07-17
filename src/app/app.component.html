@@ -21,23 +21,27 @@
           <div class="card-body p-3" (click)="setSelection(a)">
             
             <div class="card mb-4" *ngFor="let ag of a.agents ; trackBy:identify">
+              
               <div class="card-header d-flex align-items-center">
-              Agent {{ag.id}} - {{ag.type}}  <button (click)="setSelection(a)">asas</button>
-              <span class="ms-auto">{{ag.timestamp}}</span>
+                Agent {{ag.id}} - {{ag.type}}  <button (click)="setSelection(a)">asas</button>
+              </div>
+              <div class="card-header d-flex align-items-center">
+                <small>{{ag.timestamp}}</small>
+              </div>
+
+              <div class="card-body p-2">
+                <h4>Data</h4>
+                <pre>{{ag.data | json}}</pre>
               </div>
               <div class="card-body p-2">
-                {{ag.data | json}}
+                <h4>Markers</h4>
+                <pre>{{ag.markers | json}}</pre>
               </div>
               <app-ruler>
 
               </app-ruler>
             </div>
 
-
-         
-
-
-  
           </div>
         </div> 
       </div>
@@ -53,7 +57,6 @@
           <div class="card-body p-2">
             <!-- {{ag.data | json}} -->
             {{cb.outputs | json}}
-
           </div>
         </div>
       </div>
