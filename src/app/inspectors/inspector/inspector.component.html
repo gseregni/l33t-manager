@@ -1,17 +1,18 @@
-<div class="border bg-dark h-100 w-100" *ngIf="selection">
+<div class="border bg-dark h-100 w-100 overflow-scroll" >
     
-
-    <canvas id="canvas-box" class="w-100 h-50 bg-dark">
+    <canvas #myCanvas class="w-100 h-50 bg-dark">
 
     </canvas>
+    <ng-container *ngIf="selection">
+        <div class="card-body p-2" >
+            <b>Data</b>
+            <pre>{{selection.data | json}}</pre>
+        </div>
+        <div class="card-body p-2">
+            <b>Markers</b>
+            <pre>{{selection.markers | json}}</pre>
+        </div>
 
-    <div class="card-body p-2" >
-        <b>Data</b>
-        <pre>{{selection.data | json}}</pre>
-    </div>
-    <div class="card-body p-2">
-        <b>Markers</b>
-        <pre>{{selection.markers | json}}</pre>
-    </div>
+    </ng-container>
 
 </div>

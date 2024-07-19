@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, computed, effect, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, ViewChild } from '@angular/core';
 import { JsonConfigComponent } from '../json-config/json-config.component';
 import { RulerComponent } from '../ruler/ruler.component';
 import { SelectionService } from '../../services/selection.service';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CommonModule, JsonPipe } from '@angular/common';
 
 @Component({
@@ -10,70 +11,57 @@ import { CommonModule, JsonPipe } from '@angular/common';
   standalone: true,
   imports: [JsonConfigComponent, RulerComponent, JsonPipe, CommonModule],
   templateUrl: './inspector.component.html',
-  styleUrl: './inspector.component.scss'
+  styleUrls: ['./inspector.component.scss']
 })
-
-
-
 export class InspectorComponent implements AfterViewInit {
   baseMaterial = new THREE.MeshToonMaterial();
-  selection:any = null;
+  selection: any = null;
   scene!: THREE.Scene;
-  canvas!: HTMLElement;
+  @ViewChild('myCanvas') canvas!: ElementRef<HTMLCanvasElement> | undefined;
+  controls!: OrbitControls;
 
   constructor(
-    private selectionService:SelectionService,
-    elementRef: ElementRef
-  ) { 
-
+    private selectionService: SelectionService
+  ) {
     effect(() => {
       console.log("selection22")
-      this.selection = this.selectionService.selection()
-      console.log("this.selection",this.selection)
+      this.selection = this.selectionService.selection();
+      console.log("this.selection", this.selection);
       
-      
-      if (this.selection)
-        this.createThreeJsBox()
-
+      if (this.selection) {
+        alert("this.selection1");
+        this.drawMarkers();
+      }
     });
   }
-
-
-  renderMarkers() {
-  }
-  
   
   ngAfterViewInit(): void {
+    console.log("CANVAS ", this.canvas);
+    this.createThreeJsBox();
   }
 
   drawMarkers() {
-    const box = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 1.5), this.baseMaterial);
-    this.scene.add( box);
-
-
+    if (this.selection && this.selection.markers?.length) {
+      this.selection.markers.forEach((marker: any) => {
+        const box = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 1.5), this.baseMaterial);
+        this.scene.add(box);
+      });
+    }
   }
 
-
   createThreeJsBox(): void {
+    if (!this.canvas) {
+      return;
+    }
 
-
-
-
-
-
-    this.canvas = document.getElementById('canvas-box')!;
     this.scene = new THREE.Scene();
 
-    console.log(this.canvas, this.baseMaterial)
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
 
     const pointLight = new THREE.PointLight(0xffffff, 0.5);
-    pointLight.position.x = 2;
-    pointLight.position.y = 2;
-    pointLight.position.z = 2;
+    pointLight.position.set(2, 2, 2);
     this.scene.add(pointLight);
-
 
     const canvasSizes = {
       width: window.innerWidth,
@@ -89,15 +77,14 @@ export class InspectorComponent implements AfterViewInit {
     camera.position.z = 5;
     this.scene.add(camera);
 
-    if (!this.canvas) {
-      return;
-    }
-
     const renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
+      canvas: this.canvas.nativeElement,
     });
     renderer.setClearColor(0xe232222, 1);
     renderer.setSize(canvasSizes.width, canvasSizes.height);
+
+    this.controls = new OrbitControls(camera, renderer.domElement);
+    this.controls.enableDamping = true; // Enable damping (inertia) for smooth controls
 
     window.addEventListener('resize', () => {
       canvasSizes.width = window.innerWidth;
@@ -115,14 +102,7 @@ export class InspectorComponent implements AfterViewInit {
     const animateGeometry = () => {
       const elapsedTime = clock.getElapsedTime();
 
-      // Update animaiton objects
-      // box.rotation.x = elapsedTime;
-      // box.rotation.y = elapsedTime;
-      // box.rotation.z = elapsedTime;
-      // box.position.x = Math.sin(elapsedTime);
-      // torus.rotation.x = -elapsedTime;
-      // torus.rotation.y = -elapsedTime;
-      // torus.rotation.z = -elapsedTime;
+      this.controls.update(); // Update controls on each frame
 
       // Render
       renderer.render(this.scene, camera);
@@ -133,7 +113,4 @@ export class InspectorComponent implements AfterViewInit {
 
     animateGeometry();
   }
-
-
-
 }
