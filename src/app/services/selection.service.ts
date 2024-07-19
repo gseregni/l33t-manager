@@ -7,6 +7,5 @@ export class SelectionService {
 
   selection = signal(null)
 
-  
   constructor() { }
 }

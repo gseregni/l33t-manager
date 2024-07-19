@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, effect, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef } from '@angular/core';
 import { JsonConfigComponent } from '../json-config/json-config.component';
 import { RulerComponent } from '../ruler/ruler.component';
 import { SelectionService } from '../../services/selection.service';
 import * as THREE from 'three';
+import { CommonModule, JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-inspector',
   standalone: true,
-  imports: [JsonConfigComponent, RulerComponent],
+  imports: [JsonConfigComponent, RulerComponent, JsonPipe, CommonModule],
   templateUrl: './inspector.component.html',
   styleUrl: './inspector.component.scss'
 })
@@ -15,57 +16,64 @@ import * as THREE from 'three';
 
 
 export class InspectorComponent implements AfterViewInit {
-
-
-
+  baseMaterial = new THREE.MeshToonMaterial();
   selection:any = null;
+  scene!: THREE.Scene;
+  canvas!: HTMLElement;
 
   constructor(
-    selectionService:SelectionService,
+    private selectionService:SelectionService,
     elementRef: ElementRef
   ) { 
 
-    setInterval(() => { 
-
-    },500)
-
-
-
     effect(() => {
-      this.selection = selectionService.selection
+      console.log("selection22")
+      this.selection = this.selectionService.selection()
+      console.log("this.selection",this.selection)
+      
+      
+      if (this.selection)
+        this.createThreeJsBox()
+
     });
+  }
+
+
+  renderMarkers() {
   }
   
   
   ngAfterViewInit(): void {
-    this.createThreeJsBox()
+  }
+
+  drawMarkers() {
+    const box = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 1.5), this.baseMaterial);
+    this.scene.add( box);
+
+
   }
 
 
   createThreeJsBox(): void {
-    const canvas = document.getElementById('canvas-box');
 
-    const scene = new THREE.Scene();
 
-    const material = new THREE.MeshToonMaterial();
-    console.log(canvas, material)
+
+
+
+
+    this.canvas = document.getElementById('canvas-box')!;
+    this.scene = new THREE.Scene();
+
+    console.log(this.canvas, this.baseMaterial)
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
+    this.scene.add(ambientLight);
 
     const pointLight = new THREE.PointLight(0xffffff, 0.5);
     pointLight.position.x = 2;
     pointLight.position.y = 2;
     pointLight.position.z = 2;
-    scene.add(pointLight);
+    this.scene.add(pointLight);
 
-    const box = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 1.5), material);
-
-    // const torus = new THREE.Mesh(
-    //   new THREE.TorusGeometry(5, 1.5, 16, 100),
-    //   material
-    // );
-
-    scene.add( box);
 
     const canvasSizes = {
       width: window.innerWidth,
@@ -79,14 +87,14 @@ export class InspectorComponent implements AfterViewInit {
       1000
     );
     camera.position.z = 5;
-    scene.add(camera);
+    this.scene.add(camera);
 
-    if (!canvas) {
+    if (!this.canvas) {
       return;
     }
 
     const renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
+      canvas: this.canvas,
     });
     renderer.setClearColor(0xe232222, 1);
     renderer.setSize(canvasSizes.width, canvasSizes.height);
@@ -99,7 +107,7 @@ export class InspectorComponent implements AfterViewInit {
       camera.updateProjectionMatrix();
 
       renderer.setSize(canvasSizes.width, canvasSizes.height);
-      renderer.render(scene, camera);
+      renderer.render(this.scene, camera);
     });
 
     const clock = new THREE.Clock();
@@ -108,16 +116,16 @@ export class InspectorComponent implements AfterViewInit {
       const elapsedTime = clock.getElapsedTime();
 
       // Update animaiton objects
-      box.rotation.x = elapsedTime;
-      box.rotation.y = elapsedTime;
-      box.rotation.z = elapsedTime;
-
+      // box.rotation.x = elapsedTime;
+      // box.rotation.y = elapsedTime;
+      // box.rotation.z = elapsedTime;
+      // box.position.x = Math.sin(elapsedTime);
       // torus.rotation.x = -elapsedTime;
       // torus.rotation.y = -elapsedTime;
       // torus.rotation.z = -elapsedTime;
 
       // Render
-      renderer.render(scene, camera);
+      renderer.render(this.scene, camera);
 
       // Call tick again on the next frame
       window.requestAnimationFrame(animateGeometry);

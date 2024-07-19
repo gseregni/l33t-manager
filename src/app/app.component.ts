@@ -28,7 +28,8 @@ export class AppComponent implements OnInit {
     private injector: Injector) {
     this.wss.start()
   }
-
+  
+  identify: TrackByFunction<any> = (index, item) => item.id;
 
   ngOnInit(): void {
   
@@ -37,15 +38,11 @@ export class AppComponent implements OnInit {
   save() {
     // window.localStorage.setItem("l33t", this.editor.editor.toJSON())
   }
-    
 
-  identify: TrackByFunction<any> = (index, item) => item.id;
 
   setSelection(a:any): void {
-    console.log("setSelection", a)
     this.selectionService.selection.set(a)
   }
-
 
   async addNodeFromJson(json:any) {
 

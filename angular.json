@@ -30,8 +30,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/app/styles.scss",
-              "node_modules/bootstrap/scss/bootstrap.scss"
+              "src/app/styles.scss"
             ],
             "scripts": []
           },
