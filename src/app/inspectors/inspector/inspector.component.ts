@@ -29,7 +29,7 @@ export class InspectorComponent implements AfterViewInit {
       console.log("this.selection", this.selection);
       
       if (this.selection) {
-        alert("this.selection1");
+        this.loadImage()
         this.drawMarkers();
       }
     });
@@ -48,6 +48,18 @@ export class InspectorComponent implements AfterViewInit {
       });
     }
   }
+
+  loadImage(): void {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load('assets/try.jpg', (texture) => {
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const geometry = new THREE.PlaneGeometry(5, 5); // Adjust size as needed
+      const plane = new THREE.Mesh(geometry, material);
+      this.scene.add(plane);
+    });
+  }
+
+
 
   createThreeJsBox(): void {
     if (!this.canvas) {
