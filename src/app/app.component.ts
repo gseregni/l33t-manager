@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Injector, OnInit, TrackByFunction, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { WSService } from './services/ws.service';
+import { WSService } from './services/socketio.service';
 import { createEditor, socket } from './rete-editor';
 import { ClassicPreset } from 'rete';
 import { JsonPipe, NgFor } from '@angular/common';

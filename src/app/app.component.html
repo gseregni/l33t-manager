@@ -53,8 +53,7 @@
     </div>
 
     <div class="col-4">
-      <div *ngFor="let a of wss?.tree?.areas">
-        <div class="card mb-4" *ngFor="let cb of a.codeblocks">
+        <div class="card mb-4" *ngFor="let cb of wss?.tree?.codeblocks">
           <div class="card-header d-flex align-items-center">
           Codeblock {{cb.name}}
           <span class="ms-auto"></span>
@@ -64,7 +63,6 @@
             {{cb.outputs | json}}
           </div>
         </div>
-      </div>
 
     </div>
 

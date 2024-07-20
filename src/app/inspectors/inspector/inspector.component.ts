@@ -5,6 +5,7 @@ import { SelectionService } from '../../services/selection.service';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CommonModule, JsonPipe } from '@angular/common';
+import { WSService } from '../../services/socketio.service';
 
 @Component({
   selector: 'app-inspector',
@@ -19,17 +20,24 @@ export class InspectorComponent implements AfterViewInit {
   scene!: THREE.Scene;
   @ViewChild('myCanvas') canvas!: ElementRef<HTMLCanvasElement> | undefined;
   controls!: OrbitControls;
+  timestamp: number | undefined;
+  markers: any[] = [];
 
   constructor(
-    private selectionService: SelectionService
+    private selectionService: SelectionService,
+    private socketioService: WSService
   ) {
+
+    
+    // this.socketioService.onUpdate(() => {
+    //   this.selection = this.selectionService.selection();
+    //   console.log("onUpdate", this.selection);
+    //   this.drawMarkers();    
+    // })
+   this.loadImage()
     effect(() => {
-      console.log("selection22")
       this.selection = this.selectionService.selection();
-      console.log("this.selection", this.selection);
-      
       if (this.selection) {
-        this.loadImage()
         this.drawMarkers();
       }
     });
@@ -41,9 +49,18 @@ export class InspectorComponent implements AfterViewInit {
   }
 
   drawMarkers() {
+
+    this.markers.forEach((marker) => {
+      this.scene.remove(marker);
+    });
+    this.markers = [];
     if (this.selection && this.selection.markers?.length) {
       this.selection.markers.forEach((marker: any) => {
-        const box = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 1.5), this.baseMaterial);
+        const box = new THREE.Mesh(new THREE.BoxGeometry(marker.size[0], marker.size[1], marker.size[2]), this.baseMaterial);
+        this.markers.push(box);
+        box.position.x = marker.center[0];
+        box.position.y = marker.center[1];
+        box.position.z = marker.center[2];
         this.scene.add(box);
       });
     }
@@ -53,13 +70,11 @@ export class InspectorComponent implements AfterViewInit {
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load('assets/try.jpg', (texture) => {
       const material = new THREE.MeshBasicMaterial({ map: texture });
-      const geometry = new THREE.PlaneGeometry(5, 5); // Adjust size as needed
+      const geometry = new THREE.PlaneGeometry(40, 20); // Adjust size as needed
       const plane = new THREE.Mesh(geometry, material);
       this.scene.add(plane);
     });
   }
-
-
 
   createThreeJsBox(): void {
     if (!this.canvas) {
@@ -67,7 +82,6 @@ export class InspectorComponent implements AfterViewInit {
     }
 
     this.scene = new THREE.Scene();
-
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
 
