@@ -82,23 +82,10 @@ export class WSService {
         })
 
         this.socket.on("tree_refresh", (message) => {
-            
-            
             this.timestamp.update(() => Date.now())
             console.log("tree_refresh", message)
-
-            
             this.tree = message
-
-
             this.selectionService.selection.set(this.tree.areas[0].agents[0])
-
-
-            // this.callbacks.forEach((callback) => {
-            //     console.log("Calling callback")
-            //     callback()
-            // })
-
         })
 
         this.socket.on("connect", () => {

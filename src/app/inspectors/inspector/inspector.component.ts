@@ -15,6 +15,14 @@ import { WSService } from '../../services/socketio.service';
   styleUrls: ['./inspector.component.scss']
 })
 export class InspectorComponent implements AfterViewInit {
+  
+  boxMaterial = new THREE.MeshPhongMaterial({
+    color: 0x333333, //this.getRandomColor(),
+    transparent: true,
+    opacity: 0.9,
+    shininess: 100
+  });
+
   baseMaterial = new THREE.MeshToonMaterial();
   selection: any = null;
   scene!: THREE.Scene;
@@ -22,6 +30,9 @@ export class InspectorComponent implements AfterViewInit {
   controls!: OrbitControls;
   timestamp: number | undefined;
   markers: any[] = [];
+
+  geomCache = new Map<string, THREE.Box3>();
+
 
   constructor(
     private selectionService: SelectionService,
@@ -50,7 +61,7 @@ export class InspectorComponent implements AfterViewInit {
   
   ngAfterViewInit(): void {
     this.createThreeJsBox();
-    this.loadImage()
+    // this.loadImage()
   }
 
   getRandomColor() {
@@ -67,11 +78,14 @@ export class InspectorComponent implements AfterViewInit {
       this.markers = [];
 
       this.selection.data.boxes.forEach((box: any) => {
+        let box3 = this.geomCache.get(box.id)
+        if (!box3) {
+          box3 = new THREE.Box3(
+            new THREE.Vector3(box[0], box[1], 0),
+            new THREE.Vector3(box[2], box[3], 20)
+          );  
+        }
         
-        const box3 = new THREE.Box3(
-          new THREE.Vector3(box[0], box[1], 0),
-          new THREE.Vector3(box[2], box[3], 20)
-        );
 
         const center = new THREE.Vector3();
         const size = new THREE.Vector3();
@@ -79,13 +93,8 @@ export class InspectorComponent implements AfterViewInit {
         box3.getSize(size);
 
         const boxGeometry = new THREE.BoxGeometry(size.x, size.y, size.z);
-        const material = new THREE.MeshPhongMaterial({
-          color: 0x333333, //this.getRandomColor(),
-          transparent: true,
-          opacity: 0.9,
-          shininess: 100
-        });
-        let boxMesh = new THREE.Mesh(boxGeometry, material);
+        
+        let boxMesh = new THREE.Mesh(boxGeometry, this.boxMaterial);
 
         // Offset the box slightly along the z-axis
         boxMesh.position.copy(center);
